@@ -147,9 +147,8 @@
 
     <script>
         class Main {
-            constructor($scope, $http) {
+            constructor($scope) {
                 this.scope = $scope;
-                this.http = $http;
 
                 document.title = (window.location.host || "Locandy") + " Spritesheet Generator";
 
@@ -171,9 +170,17 @@
             }
 
             loadIcons() {
-                this.http.get("icons/icons.json").then(
-                    (response) => {
-                        const data = response.data || {};
+                fetch("icons/icons.json")
+                    .then((response) => {
+                        if (!response.ok) {
+                            const err = new Error("HTTP error " + response.status);
+                            err.status = response.status;
+                            throw err;
+                        }
+                        return response.json();
+                    })
+                    .then((rawData) => {
+                        const data = rawData || {};
                         const langSet = new Set();
                         const models = [];
 
@@ -216,21 +223,24 @@
                             models.push(model);
                         });
 
-                        if (langSet.size > 0) {
-                            this.scope.availableLangs = Array.from(langSet);
-                            if (!langSet.has(this.scope.selectedLang)) {
-                                this.scope.selectedLang = this.scope.availableLangs[0];
+                        this.scope.$applyAsync(() => {
+                            if (langSet.size > 0) {
+                                this.scope.availableLangs = Array.from(langSet);
+                                if (!langSet.has(this.scope.selectedLang)) {
+                                    this.scope.selectedLang = this.scope.availableLangs[0];
+                                }
                             }
-                        }
 
-                        this.scope.iconModels = models;
-                        this.updateAll();
-                    },
-                    (err) => {
-                        this.scope.loadError = "Failed to load icons/icons.json (" + (err.status || "error") + ")";
-                        this.updateAll();
-                    }
-                );
+                            this.scope.iconModels = models;
+                            this.updateAll();
+                        });
+                    })
+                    .catch((err) => {
+                        this.scope.$applyAsync(() => {
+                            this.scope.loadError = "Failed to load icons/icons.json (" + (err.status || err.message || "error") + ")";
+                            this.updateAll();
+                        });
+                    });
             }
 
             getCheckedModels() {
@@ -376,7 +386,7 @@
         }
 
         const NG_APP_NAME = "myApp";
-        const NG_CONTROLLERS = [["Main", ["$scope", "$http", Main]]];
+        const NG_CONTROLLERS = [["Main", ["$scope", Main]]];
 
         var app = angular.module(NG_APP_NAME, []);
         app.config(["$controllerProvider", function ($controllerProvider) {
