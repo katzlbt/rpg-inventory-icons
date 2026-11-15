@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="angular.min.js"></script>
+    <link href="https://unpkg.com/basscss@8.0.2/css/basscss.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding: 16px;
+            font-family: "Courier", monospace;
+            background-color: #f7f7f7;
+            color: #222;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .canvas-wrapper {
+            text-align: center;
+            overflow-x: auto;
+            padding: 8px;
+            background-image:
+                linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
+                linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
+                linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: #fafafa;
+            border: 1px solid #ccc;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .icon-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .icon-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .icon-item:hover {
+            background-color: #f2f6fa;
+        }
+
+        .icon-thumb-box {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border: 1px solid #ccc;
+            background-color: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .icon-thumb-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .icon-id {
+            font-weight: bold;
+            min-width: 150px;
+            flex-shrink: 0;
+        }
+
+        .icon-desc {
+            color: #444;
+            flex: 1;
+        }
+
+        textarea.config-output {
+            width: 100%;
+            height: 360px;
+            font-family: "Courier", monospace;
+            font-size: 13px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fcfcfc;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        button, .btn-action {
+            font-family: inherit;
+            font-size: 13px;
+            padding: 6px 12px;
+            cursor: pointer;
+            border: 1px solid #888;
+            border-radius: 3px;
+            background-color: #eee;
+        }
+
+        button:hover, .btn-action:hover {
+            background-color: #ddd;
+        }
+
+        input[type="number"], input[type="text"], select {
+            font-family: inherit;
+            padding: 4px 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+    </style>
+
+    <script>
+        class Main {
+            constructor($scope, $http) {
+                this.scope = $scope;
+                this.http = $http;
+
+                document.title = (window.location.host || "Locandy") + " Spritesheet Generator";
+
+                this.scope.cols = 4;
+                this.scope.rows = 1;
+                this.scope.canvasWidth = 1024;
+                this.scope.canvasHeight = 256;
+                this.scope.selectedLang = "en";
+                this.scope.availableLangs = ["en", "de"];
+                this.scope.bgMode = "transparent"; // 'transparent' | 'color'
+                this.scope.bgColor = "#000000";
+                this.scope.imageName = "inventory.png";
+                this.scope.iconModels = [];
+                this.scope.configJson = "";
+                this.scope.copyStatus = "";
+                this.scope.loadError = "";
+
+                this.loadIcons();
+            }
+
+            loadIcons() {
+                this.http.get("icons/icons.json").then(
+                    (response) => {
+                        const data = response.data || {};
+                        const langSet = new Set();
+                        const models = [];
+
+                        Object.keys(data).forEach((filename) => {
+                            const translations = data[filename] || {};
+                            Object.keys(translations).forEach((lang) => langSet.add(lang));
+
+                            const itemId = filename.replace(/\.[^/.]+$/, "");
+                            const model = {
+                                filename: filename,
+                                id: itemId,
+                                src: "icons/" + filename,
+                                translations: translations,
+                                checked: false,
+                                imgElement: null,
+                                imgLoaded: false,
+                                imgFailed: false
+                            };
+
+                            const img = new Image();
+                            img.onload = () => {
+                                model.imgElement = img;
+                                model.imgLoaded = true;
+                                this.scope.$applyAsync(() => {
+                                    if (model.checked) {
+                                        this.updateAll();
+                                    }
+                                });
+                            };
+                            img.onerror = () => {
+                                model.imgFailed = true;
+                                this.scope.$applyAsync(() => {
+                                    if (model.checked) {
+                                        this.updateAll();
+                                    }
+                                });
+                            };
+                            img.src = model.src;
+
+                            models.push(model);
+                        });
+
+                        if (langSet.size > 0) {
+                            this.scope.availableLangs = Array.from(langSet);
+                            if (!langSet.has(this.scope.selectedLang)) {
+                                this.scope.selectedLang = this.scope.availableLangs[0];
+                            }
+                        }
+
+                        this.scope.iconModels = models;
+                        this.updateAll();
+                    },
+                    (err) => {
+                        this.scope.loadError = "Failed to load icons/icons.json (" + (err.status || "error") + ")";
+                        this.updateAll();
+                    }
+                );
+            }
+
+            getCheckedModels() {
+                return (this.scope.iconModels || []).filter((item) => item.checked);
+            }
+
+            toggleAll(state) {
+                (this.scope.iconModels || []).forEach((item) => {
+                    item.checked = state;
+                });
+                this.updateAll();
+            }
+
+             clampCols() {
+                let c = parseInt(this.scope.cols, 10);
+                if (isNaN(c) || c < 1) c = 1;
+                if (c > 8) c = 8;
+                this.scope.cols = c;
+                return c;
+            }
+
+            updateAll() {
+                const cols = this.clampCols();
+                const checked = this.getCheckedModels();
+                const rows = Math.max(1, Math.ceil(checked.length / cols));
+                this.scope.rows = rows;
+
+                const cellSize = this.scope.canvasWidth / cols;
+                const canvasHeight = Math.round(rows * cellSize);
+                this.scope.canvasHeight = canvasHeight;
+
+                this.renderSpritesheet(checked, cols, rows, cellSize, canvasHeight);
+                this.generateJson(checked, cols, rows);
+            }
+
+            renderSpritesheet(checkedModels, cols, rows, cellSize, canvasHeight) {
+                const canvas = document.getElementById("spritesheetCanvas");
+                if (!canvas) return;
+
+                canvas.width = this.scope.canvasWidth;
+                canvas.height = canvasHeight;
+
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (this.scope.bgMode === "color") {
+                    ctx.fillStyle = this.scope.bgColor || "#000000";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+
+                checkedModels.forEach((item, index) => {
+                    const col = index % cols;
+                    const row = Math.floor(index / cols);
+                    const cellX = col * cellSize;
+                    const cellY = row * cellSize;
+
+                    if (item.imgLoaded && item.imgElement) {
+                        const iw = item.imgElement.naturalWidth || item.imgElement.width;
+                        const ih = item.imgElement.naturalHeight || item.imgElement.height;
+                        if (iw > 0 && ih > 0) {
+                            const scale = Math.min(cellSize / iw, cellSize / ih);
+                            const drawW = iw * scale;
+                            const drawH = ih * scale;
+                            const drawX = cellX + (cellSize - drawW) / 2;
+                            const drawY = cellY + (cellSize - drawH) / 2;
+                            ctx.drawImage(item.imgElement, drawX, drawY, drawW, drawH);
+                        }
+                    }
+                    // If image is missing/failed, cell remains empty as requested.
+                });
+            }
+
+            generateJson(checkedModels, cols, rows) {
+                const lang = this.scope.selectedLang;
+                const items = [];
+                const descriptions = {};
+
+                checkedModels.forEach((item) => {
+                    items.push(item.id);
+                    const text = (item.translations && item.translations[lang]) || "";
+                    descriptions[item.id] = text;
+                });
+
+                const config = {
+                    spritesheet: {
+                        image: this.scope.imageName || "inventory.png",
+                        rows: rows,
+                        cols: cols,
+                        items: items
+                    },
+                    descriptions: descriptions
+                };
+
+                this.scope.configJson = JSON.stringify(config, null, 2);
+            }
+
+            saveSpritesheet(format) {
+                const canvas = document.getElementById("spritesheetCanvas");
+                if (!canvas) return;
+
+                let mimeType = "image/png";
+                let ext = "png";
+                if (format === "webp") {
+                    mimeType = "image/webp";
+                    ext = "webp";
+                }
+
+                const dataUrl = canvas.toDataURL(mimeType, 0.92);
+                const link = document.createElement("a");
+                const baseName = (this.scope.imageName && this.scope.imageName !== "filled by user")
+                    ? this.scope.imageName.replace(/[^a-zA-Z0-9_-]/g, "_")
+                    : "spritesheet";
+                link.download = baseName + "." + ext;
+                link.href = dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            copyJson() {
+                const text = this.scope.configJson || "";
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.scope.$applyAsync(() => {
+                            this.scope.copyStatus = "Copied!";
+                            setTimeout(() => {
+                                this.scope.$applyAsync(() => { this.scope.copyStatus = ""; });
+                            }, 2000);
+                        });
+                    });
+                } else {
+                    const ta = document.getElementById("configJsonTextbox");
+                    if (ta) {
+                        ta.select();
+                        document.execCommand("copy");
+                        this.scope.copyStatus = "Copied!";
+                        setTimeout(() => {
+                            this.scope.$applyAsync(() => { this.scope.copyStatus = ""; });
+                        }, 2000);
+                    }
+                }
+            }
+        }
+
+        const NG_APP_NAME = "myApp";
+        const NG_CONTROLLERS = [["Main", ["$scope", "$http", Main]]];
+
+        var app = angular.module(NG_APP_NAME, []);
+        app.config(["$controllerProvider", function ($controllerProvider) {
+            for (var i = 0; i < NG_CONTROLLERS.length; i++) {
+                $controllerProvider.register(NG_CONTROLLERS[i][0], NG_CONTROLLERS[i][1]);
+            }
+        }]);
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="Main as m">
+
+    <!-- 1. TOP: Spritesheet Preview & Controls -->
+    <div class="panel">
+        <h2 style="margin-top: 0; margin-bottom: 12px;">Spritesheet ({{ canvasWidth }}px &times; {{ canvasHeight }}px, {{ cols }} cols &times; {{ rows }} rows)</h2>
+
+        <div class="controls-row" style="margin-bottom: 12px;">
+            <div class="control-group">
+                <label for="colsInput"><b>Columns (1–8):</b></label>
+                <input id="colsInput" type="number" min="1" max="8" ng-model="cols" ng-change="m.updateAll()" style="width: 60px;">
+            </div>
+
+            <div class="control-group">
+                <label for="langSelect"><b>Language:</b></label>
+                <select id="langSelect" ng-model="selectedLang" ng-options="lang for lang in availableLangs" ng-change="m.updateAll()"></select>
+            </div>
+
+            <div class="control-group">
+                <label for="bgModeSelect"><b>Background:</b></label>
+                <select id="bgModeSelect" ng-model="bgMode" ng-change="m.updateAll()">
+                    <option value="transparent">Transparent</option>
+                    <option value="color">Solid Color</option>
+                </select>
+                <input type="color" ng-if="bgMode === 'color'" ng-model="bgColor" ng-change="m.updateAll()">
+            </div>
+
+            <div class="control-group">
+                <button type="button" ng-click="m.saveSpritesheet('png')">Save PNG</button>
+                <button type="button" ng-click="m.saveSpritesheet('webp')">Save WebP</button>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <div class="canvas-wrapper">
+                <canvas id="spritesheetCanvas" width="1024" height="256"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MIDDLE: Icons Checkbox List -->
+    <div class="panel">
+        <div class="controls-row" style="justify-content: space-between; margin-bottom: 8px;">
+            <h3 style="margin: 0;">Icons ({{ m.getCheckedModels().length }} / {{ iconModels.length }} selected)</h3>
+            <div class="control-group">
+                <button type="button" ng-click="m.toggleAll(true)">Select All</button>
+                <button type="button" ng-click="m.toggleAll(false)">Deselect All</button>
+            </div>
+        </div>
+
+        <div ng-if="loadError" style="color: #b00; padding: 8px 0;">{{ loadError }}</div>
+
+        <ul class="icon-list">
+            <li class="icon-item" ng-repeat="item in iconModels" ng-click="item.checked = !item.checked; m.updateAll()">
+                <input type="checkbox" ng-model="item.checked" ng-change="m.updateAll()" ng-click="$event.stopPropagation()">
+                <div class="icon-thumb-box">
+                    <img ng-if="!item.imgFailed" ng-src="{{ item.src }}" alt="{{ item.id }}">
+                </div>
+                <span class="icon-id">{{ item.id }}</span>
+                <span class="icon-desc">{{ item.translations[selectedLang] || '' }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 3. BOTTOM: Non-editable Config JSON Textbox -->
+    <div class="panel">
+        <div class="controls-row" style="justify-content: space-between; margin-bottom: 8px;">
+            <h3 style="margin: 0;">Generated Inventory.config JSON</h3>
+            <div class="control-group">
+                <label for="imageNameInput"><b>spritesheet.image:</b></label>
+                <input id="imageNameInput" type="text" ng-model="imageName" ng-change="m.updateAll()" style="width: 180px;">
+                <button type="button" ng-click="m.copyJson()">Copy JSON</button>
+                <span ng-if="copyStatus" style="color: green; font-weight: bold;">{{ copyStatus }}</span>
+            </div>
+        </div>
+
+        <textarea id="configJsonTextbox" class="config-output" readonly ng-model="configJson" onclick="this.select()"></textarea>
+    </div>
+</body>
+</html>
