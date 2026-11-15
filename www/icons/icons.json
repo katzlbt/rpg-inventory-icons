@@ -1,0 +1,118 @@
+{
+    "i_gold.png": {
+        "en": "A small, glittering pile of valuable gold coins.",
+        "de": "Ein kleiner, glitzernder Haufen wertvoller Goldmünzen."
+    },
+    "i_shovel.png": {
+        "en": "A rusty iron shovel featuring a worn wooden shaft.",
+        "de": "Eine rostige Eisenschaufel mit einem abgenutzten Holzstiel."
+    },
+   "i_sword_rusty.png": {
+        "en": "A rusty, discarded iron sword that has seen better days in battle.",
+        "de": "Ein rostiges, ausrangiertes Eisenschwert, das in der Schlacht schon bessere Tage gesehen hat."
+    },
+    "i_sword_new.png": {
+        "en": "A new polished iron sword fresh from the blacksmith. It has never been used.",
+        "de": "tbd"
+    },
+    "i_sword_ice.png": {
+        "en": "A magical frost sword with a translucent icy blue crystal blade, glowing frost runes, and cold mist radiating from the edge.",
+        "de": "tbd"
+    },
+    "i_sword_fire.png": {
+        "en": "A blazing fire sword with a molten obsidian and glowing magma blade, wreathed in flickering flames and embers.",
+        "de": "tbd"
+    },
+    "i_iron_axe.png": {
+        "en": "A heavily rusted iron axe with a dulled, chipped edge.",
+        "de": "Eine stark verrostete Eisenaxt mit einer stumpfen, schartigen Klinge."
+    },
+    "i_iron_mace.png": {
+        "en": "A rusted iron mace that still packs a heavy, blunt punch despite its age.",
+        "de": "Ein verrosteter Eisenstreitkolben, der trotz seines Alters immer noch schwere, stumpfe Schläge austeilt."
+    },
+    "i_bow.png": {
+        "en": "A simple but reliable wooden bow crafted for basic hunting.",
+        "de": "Ein einfacher, aber zuverlässiger Holzbogen, der für die einfache Jagd gefertigt wurde."
+    },
+    "i_arrows.png": {
+        "en": "A bundle of cheaply made wooden arrows with iron tips.",
+        "de": "Ein Bündel billig hergestellter Holzpfeile mit Eisenspitzen."
+    },
+    "i_flame_arrows.png": {
+        "en": "Enchanted arrows that burst into fierce flames upon impact.",
+        "de": "Verzauberte Pfeile, die beim Aufprall in heftige Flammen ausbrechen."
+    },
+    "i_mithril_bow.png": {
+        "en": "A legendary mithril bow showcasing the finest and most delicate elven craftsmanship.",
+        "de": "Ein legendärer Mithrilbogen, der feinste und filigranste Elfenhandwerkskunst präsentiert."
+    },
+    "i_potion_yellow.png": {
+    "en": "An aggressively cheerful, violently yellow fluid that softly vibrates. It cures all ailments but tastes like chunky sunshine and leaves you burping faint sparks for a fortnight."
+    ,"de": "tbd"
+  },
+  "i_potion_red.png": {
+    "en": "A thick crimson syrup that gently boils whenever you break eye contact with it. It smells of cinnamon and bad decisions, and while it heals wounds instantly, your inner monologue will temporarily be broadcast via a ghostly tuba."
+    ,"de": "tbd"
+  },
+  "i_potion_blue.png": {
+    "en": "A freezing cobalt liquid containing a tiny, very angry storm cloud. It replenishes magical reserves but tastes exactly like licking a 9-volt battery and makes your hair whisper ancient secrets to bystanders."
+    ,"de": "tbd"
+  },
+  "i_potion_green.png": {
+    "en": "A glowing emerald sludge that actively sloshes upward against gravity. Known to cure any venom, it smells of freshly mowed grass and overwhelming guilt, with a minor side effect of spontaneous photosynthesis."
+    ,"de": "tbd"
+  },
+  "i_potion_orange.png": {
+    "en": "An effervescent neon orange concoction emitting a faint, rhythmic disco beat from inside the glass. It grants unparalleled speed, provided you are willing to accept that every sentence you speak for the next hour must perfectly rhyme."
+    ,"de": "tbd"
+  },
+  "i_potion_purple.png": {
+    "en": "A swirling amethyst vapor trapped in liquid form. It grants the drinker true invisibility, though the apothecary failed to mention it only works while no one is looking at you. Tastes strongly of plum jam and existential dread."
+    ,"de": "tbd"
+  },
+  "i_key_rusty.png": {
+    "en": "Thick flakes of reddish-brown corrosion coat the simple oval bow and pit the uneven iron shaft, leaving the notched bit looking brittle and worn. Despite its neglected state, faint, deliberate scratch marks near the tip suggest it was hidden away in the damp earth to keep something from ever being opened again.",
+    "de": "tbd"
+  },
+  "i_key_polished.png": {
+    "en": "Buffed to a mirror-like sheen, this key features a smooth circular bow, a sleek cylindrical shaft, and a sharply cut bit that catches every stray beam of light. Strangely, no matter how often it is handled or left in dusty drawers, it never gathers a single fingerprint or tarnish, as if time itself refuses to touch it.",
+    "de": "tbd"
+  },
+  "i_key_black.png": {
+    "en": "Forged from a matte, light-drinking metal, its angular bow flows into a heavy octagonal shaft and a jagged, labyrinthine bit. It feels unnaturally cold to the touch, and in dim rooms, the shadows around its teeth seem to stretch and twitch when no one is looking directly at it.",
+    "de": "tbd"
+  },
+  "i_key_silver.png": {
+    "en": "Slender and graceful, this sterling key boasts a crescent-shaped bow, a fluted shaft, and a delicate bit etched with tiny geometric wards. Legend says it was cast under a winter eclipse, designed to unlock a door that only appears when moonlight hits a certain blank stone wall.",
+    "de": "tbd"
+  },
+  "i_key_golden.png": {
+    "en": "Heavy for its size, the key gleams with a warm, opulent luster across its sun-motif bow, braided shaft, and symmetrical, crown-like bit. Though it looks fit for a royal treasury, the faint hum vibrating through the metal hints at a forgotten vault where something far more dangerous than wealth is kept.",
+    "de": "tbd"
+  },
+  "i_key_ornate.png": {
+    "en": "Intricate filigree spirals weave together to form a trefoil bow, continuing as vine-like engravings down the slender shaft to an elaborately pierced bit. Each microscopic flourish seems to shift subtly upon closer inspection, rumored to be the master work of a clockmaker who built a room outside of time.",
+    "de": "tbd"
+  },
+  "i_key_wooden.png": {
+    "en": "Carved from a single piece of dense, dark heartwood, its knot-shaped bow and smooth, grain-swirled shaft end in a surprisingly sturdy, pegged bit. It smells faintly of ancient rain and crushed moss, and those who hold it in silence claim they can hear the distant creak of forest boughs shifting to reveal a hidden path.",
+    "de": "tbd"
+  },
+  "i_key_bone.png": {
+    "en": "Yellowed with age, the bow is fashioned from a fused knuckle joint that tapers into a marrow-smooth shaft and a bit carved to resemble interlocking teeth. Nobody knows what creature yielded the material, only that the key grows faintly warm whenever it is brought near locked secrets of the long-departed.",
+    "de": "tbd"
+  },
+  "i_torch_burning.png": {
+    "en": "A simple wooden torch.",
+    "de": "tbd"
+  },
+  "i_torch_burnt.png": {
+    "en": "A simple wooden torch. It was lit before and shows traces of charring",
+    "de": "tbd"
+  },
+  "i_torch_new.png": {
+    "en": "A new torch that was never used.",
+    "de": "tbd"
+  }
+}
