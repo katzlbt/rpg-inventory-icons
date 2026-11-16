@@ -24,7 +24,7 @@
         "de": "tbd"
     },
     "i_iron_axe.png": {
-        "en": "A heavily rusted iron axe with a dulled, chipped edge.",
+        "en": "A heavy dwarven iron axe that has seen many battles.",
         "de": "Eine stark verrostete Eisenaxt mit einer stumpfen, schartigen Klinge."
     },
     "i_iron_mace.png": {
@@ -39,8 +39,12 @@
         "en": "A bundle of cheaply made wooden arrows with iron tips.",
         "de": "Ein Bündel billig hergestellter Holzpfeile mit Eisenspitzen."
     },
-    "i_flame_arrows.png": {
+    "i_arrow_ice.png": {
         "en": "Enchanted arrows that burst into fierce flames upon impact.",
+        "de": "Verzauberte Pfeile, die beim Aufprall in heftige Flammen ausbrechen."
+    },
+    "i_arrow_fire.png": {
+        "en": "Enchanted arrows that freeze the target upon impact.",
         "de": "Verzauberte Pfeile, die beim Aufprall in heftige Flammen ausbrechen."
     },
     "i_mithril_bow.png": {
@@ -100,7 +104,11 @@
     "de": "tbd"
   },
   "i_key_bone.png": {
-    "en": "Yellowed with age, the bow is fashioned from a fused knuckle joint that tapers into a marrow-smooth shaft and a bit carved to resemble interlocking teeth. Nobody knows what creature yielded the material, only that the key grows faintly warm whenever it is brought near locked secrets of the long-departed.",
+    "en": "Yellowed with age, the bow is fashioned from skull that tapers into a marrow-smooth shaft and a bit carved to resemble interlocking teeth. Nobody knows what creature yielded the material, only that the key grows faintly warm whenever it is brought near locked secrets of the long-departed.",
+    "de": "tbd"
+  },
+  "i_key_bone_glow.png": {
+    "en": "Yellowed with age, the bow is fashioned from a skull that tapers into a marrow-smooth shaft and a bit carved to resemble interlocking teeth. Nobody knows what creature yielded the material, only that the key grows faintly warm whenever it is brought near locked secrets of the long-departed.",
     "de": "tbd"
   },
   "i_torch_burning.png": {
