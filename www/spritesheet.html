@@ -152,10 +152,11 @@
 
                 document.title = (window.location.host || "Locandy") + " Spritesheet Generator";
 
-                this.scope.cols = 4;
+                this.scope.selectedFolder = "icons";
+                this.scope.cols = 6;
                 this.scope.rows = 1;
                 this.scope.canvasWidth = 1024;
-                this.scope.canvasHeight = 256;
+                this.scope.canvasHeight = Math.round(1024 / 6);
                 this.scope.selectedLang = "en";
                 this.scope.availableLangs = ["en", "de"];
                 this.scope.bgMode = "transparent"; // 'transparent' | 'color'
@@ -170,7 +171,13 @@
             }
 
             loadIcons() {
-                fetch("icons/icons.json")
+                const folder = this.scope.selectedFolder || "icons";
+                const jsonPath = folder + "/icons.json";
+                this.scope.loadError = "";
+                this.scope.iconModels = [];
+                this.updateAll();
+
+                fetch(jsonPath)
                     .then((response) => {
                         if (!response.ok) {
                             const err = new Error("HTTP error " + response.status);
@@ -180,6 +187,7 @@
                         return response.json();
                     })
                     .then((rawData) => {
+                        if ((this.scope.selectedFolder || "icons") !== folder) return;
                         const data = rawData || {};
                         const langSet = new Set();
                         const models = [];
@@ -192,7 +200,7 @@
                             const model = {
                                 filename: filename,
                                 id: itemId,
-                                src: "icons/" + filename,
+                                src: folder + "/" + filename,
                                 translations: translations,
                                 checked: false,
                                 imgElement: null,
@@ -236,8 +244,9 @@
                         });
                     })
                     .catch((err) => {
+                        if ((this.scope.selectedFolder || "icons") !== folder) return;
                         this.scope.$applyAsync(() => {
-                            this.scope.loadError = "Failed to load icons/icons.json (" + (err.status || err.message || "error") + ")";
+                            this.scope.loadError = "Failed to load " + jsonPath + " (" + (err.status || err.message || "error") + ")";
                             this.updateAll();
                         });
                     });
@@ -404,6 +413,14 @@
 
         <div class="controls-row" style="margin-bottom: 12px;">
             <div class="control-group">
+                <label for="folderSelect"><b>Folder:</b></label>
+                <select id="folderSelect" ng-model="selectedFolder" ng-change="m.loadIcons()">
+                    <option value="icons">icons</option>
+                    <option value="stoneage">stoneage</option>
+                </select>
+            </div>
+
+            <div class="control-group">
                 <label for="colsInput"><b>Columns (1–8):</b></label>
                 <input id="colsInput" type="number" min="1" max="8" ng-model="cols" ng-change="m.updateAll()" style="width: 60px;">
             </div>
@@ -430,7 +447,7 @@
 
         <div style="text-align: center;">
             <div class="canvas-wrapper">
-                <canvas id="spritesheetCanvas" width="1024" height="256"></canvas>
+                <canvas id="spritesheetCanvas" width="1024" height="171"></canvas>
             </div>
         </div>
     </div>
