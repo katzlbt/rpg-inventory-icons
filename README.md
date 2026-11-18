@@ -88,7 +88,7 @@ Then open `http://localhost:8000/www/spritesheet.html` in your browser, or use t
 
 ## 🤖 AI Asset Generation & Tech Notes
 
-- **Icon Generation**: Icons were generated locally via Gemini 4 Hydrogen and ComfyUI / Qwen-image-2.1 using reference-image workflows to get transparency.
+- **Icon Generation**: Icons and decriptions were generated locally via Google Nano Banana 2.1, Google Gemini 4 Hydrogen and ComfyUI / Qwen-image-2.1 using reference-image workflows to get transparency.
 - **Roadmap / TODO**: Add generalized scripts to automate generating icons and multi-language item descriptions using AI.
 - **Implementation**: Built as a self-contained single-page application in [`www/spritesheet.html`](www/spritesheet.html) using AngularJS (`angular.min.js`) and Basscss—implemented by Gemini 4 Carbon in 54 seconds (after 2 hours of specification).
 
